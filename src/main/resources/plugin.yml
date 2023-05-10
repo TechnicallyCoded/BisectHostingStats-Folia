@@ -1,0 +1,7 @@
+name: BisectHosting-Folia
+version: '${version}'
+main: com.tcoded.bisecthostingfolia.BisectHostingFolia
+api-version: 1.19
+folia-supported: true
+depend:
+  - spark

@@ -1,0 +1,10 @@
+stats:
+  tps:
+    enabled: true
+    only-show-stats-for-world: ""
+  entities:
+    enabled: true
+    only-show-stats-for-world: ""
+  chunks:
+    enabled: true
+    only-show-stats-for-world: ""
