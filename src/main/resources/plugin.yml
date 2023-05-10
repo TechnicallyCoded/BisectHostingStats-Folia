@@ -4,6 +4,7 @@ main: com.tcoded.bisecthostingfolia.BisectHostingFolia
 api-version: 1.19
 folia-supported: true
 author: "TechnicallyCoded"
+description: "Created by TechnicallyCoded (@TechnicallyCoded#9095) in collaboration with the Havok server (https://discord.gg/dSPTmKmzpu) run by @yomamaeatstoes#6491."
 depend:
   - spark
 commands:
