@@ -1,5 +1,6 @@
 package com.tcoded.bisecthostingfolia;
 
+import com.tcoded.bisecthostingfolia.command.BisectHostingStatsCmd;
 import com.tcoded.bisecthostingfolia.tasks.TpsTask;
 import com.tcoded.bisecthostingfolia.tasks.WorldStatsTask;
 import com.tcoded.bisecthostingfolia.tasks.WriteStatsAsyncTask;
@@ -16,6 +17,7 @@ import me.lucko.spark.common.platform.PlatformStatisticsProvider;
 import me.lucko.spark.common.platform.world.WorldInfoProvider;
 import me.lucko.spark.common.platform.world.WorldStatisticsProvider;
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -34,10 +36,26 @@ public final class BisectHostingFolia extends JavaPlugin {
     private WorldInfoProvider worldInfoProvider;
 
     public void onEnable() {
+        // Init
         setPlugin(this);
 
+        // Config
+        saveDefaultConfig();
+
+        // Spark integration
         init();
 
+        // Commands
+        BisectHostingStatsCmd bisectHostingStatsCmd = new BisectHostingStatsCmd();
+        PluginCommand bisectHostingStatsPlCmd = getCommand("bisecthostingstats");
+        if (bisectHostingStatsPlCmd != null) {
+            bisectHostingStatsPlCmd.setExecutor(bisectHostingStatsCmd);
+            bisectHostingStatsPlCmd.setTabCompleter(bisectHostingStatsCmd);
+        } else {
+            getLogger().warning("Could not register command BisectHostingStatsCmd");
+        }
+
+        // Tasks
         this.registerScheduledTasks();
     }
 

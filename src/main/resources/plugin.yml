@@ -5,3 +5,12 @@ api-version: 1.19
 folia-supported: true
 depend:
   - spark
+commands:
+  bisecthostingstats:
+    permission: bisecthostingfolia.command.bisecthostingstats
+    alias: [bhs]
+
+permissions:
+    bisecthostingfolia.command.bisecthostingstats:
+        description: Allows the user to use the /bisecthostingstats command
+        default: op

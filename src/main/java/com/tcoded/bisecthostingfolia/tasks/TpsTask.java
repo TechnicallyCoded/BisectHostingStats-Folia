@@ -5,6 +5,7 @@ import com.tcoded.bisecthostingfolia.BisectHostingFolia;
 import io.papermc.paper.threadedregions.ThreadedRegionizer;
 import io.papermc.paper.threadedregions.TickData;
 import io.papermc.paper.threadedregions.TickRegions;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Comparator;
 import java.util.List;
@@ -22,18 +23,28 @@ public class TpsTask implements Runnable {
     @Override
     public void run() {
         try {
+            // Config
+            FileConfiguration config = BisectHostingFolia.getPlugin().getConfig();
+
+            boolean tpsEnabled = config.getBoolean("stats.tps.enabled", true);
+            if (!tpsEnabled) {
+                tps.set(0);
+                return;
+            }
+
+            String onlyCheckWorldName = config.getString("stats.tps.only-show-stats-for-world", "");
+            boolean shouldCheckAllWorlds = onlyCheckWorldName.isEmpty();
+
+            // Spark internal
             List<ThreadedRegionizer.ThreadedRegion<TickRegions.TickRegionData, TickRegions.TickRegionSectionData>> regions = BisectHostingFolia.getPlugin().getAllRegions();
 
-            AtomicInteger regionCount = new AtomicInteger(0);
-
+            // Filter region data
             long nanoTime = System.nanoTime();
             regions.stream()
-                    .map(region -> region.getData().getRegionSchedulingHandle().getTickReport5s(nanoTime))
+                    .map(ThreadedRegionizer.ThreadedRegion::getData)
+                    .filter(data -> shouldCheckAllWorlds || data.world.getWorld().getName().equals(onlyCheckWorldName))
+                    .map(data -> data.getRegionSchedulingHandle().getTickReport5s(nanoTime))
                     .filter(Objects::nonNull)
-                    .map(data -> {
-                        regionCount.addAndGet(1);
-                        return data;
-                    })
                     .map(data -> data.tpsData().segmentAll().average())
                     .min(Double::compare)
                     .ifPresent(tps::set);
